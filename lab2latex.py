@@ -5,7 +5,7 @@ import re
 import urllib.parse
 
 document = []
-valid_title_pattern = re.compile('(Bonus )?Problem \d+.')
+valid_title_pattern = re.compile('(Bonus )?Problem (\d )*\(\d+ pts\)', re.IGNORECASE)
 header_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 
 def add_documentclass(type="article"):
@@ -84,20 +84,22 @@ class LabHTMLParser(html.parser.HTMLParser):
             self.valid_problem = False
 
     def clean_and_add_to_doc(self, data):
-        def generic_function_name(s):
-            if not (s.endswith('.')):
-                return s + '?'
+        def split_after_question_mark(s):
+            if s == '':
+                return []
+            index = s.find('?')
+            if index == -1:
+                return [s]
             else:
-                return s
+                return [s[:index+1]] + split_after_question_mark(s[index+1:])
 
         if self.valid_problem:
             newline_pattern = re.compile('\n')
             x = data
             x = newline_pattern.sub(' ', x)
-            x = x.split('?')
+            x = split_after_question_mark(x)
             x = list(map(lambda s: s.strip(), x))
             x = list(filter(lambda s: s != '', x))
-            x = list(map(generic_function_name, x))
             if len(x) > 1:
                 add_numbered_list(x)
             else:
