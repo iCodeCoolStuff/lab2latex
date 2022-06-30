@@ -5,7 +5,8 @@ import re
 import urllib.parse
 
 document = []
-valid_title_pattern = re.compile('(Bonus )?Problem (\d )*\(\d+ pts\)', re.IGNORECASE)
+valid_title_pattern = re.compile('(Bonus )?Problem (\d+ )?\(\d+ pts\)',
+                                 re.IGNORECASE)
 header_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
 
 def add_documentclass(type="article"):
@@ -170,7 +171,13 @@ def main():
     host = parse_result.netloc
     path = parse_result.path
 
-    the_html = fetch_and_return_html(host, path)
+    #the_html = fetch_and_return_html(host, path)
+
+    # http.client.HTTPSConnection does not follow redirects by default.
+    # Use shell script instead
+    import subprocess
+    the_html = subprocess.run(["curl", '-X', 'GET', '-L', url],
+                              capture_output=True).stdout.decode()
 
     add_documentclass()
     add_generic_usepackage()

@@ -3,7 +3,8 @@
 A script to convert a lab HTML document into LaTeX. This is particularly for labs from the course [CS240 at Purdue University](https://www.cs.purdue.edu/homes/park/cs240/).
 
 ## Requirements
-The only thing you need is python3 installed on your computer.
+The only thing you need is python3 and cURL installed on your computer.
+cURL download [link](https://curl.se/download.html)
 
 ## Common Usage:
 ```python3 lab2latex --author <your name> --title <sample title> --url https://www.cs.purdue.edu/homes/park/cs240/labx/labx.html```
